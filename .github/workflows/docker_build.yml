@@ -1,0 +1,53 @@
+name: Build Docker Images
+
+on: push
+
+env:
+  CMAKE_VERSION: "3.21.4"
+  CMAKE_URL: "https://github.com/Kitware/CMake/releases/download/v3.21.4/cmake-3.21.4-linux-x86_64.tar.gz"
+  CONAN_VERSION: "1.42.1"
+
+jobs:
+  cmake-clang:
+    name: "CMake + Clang"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - clang_major: 11
+            distro: focal
+          - clang_major: 12
+            distro: focal
+          - clang_major: 13
+            distro: focal
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to github 
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Clang${{ matrix.clang_major }} + Conan ${{ env.CONAN_VERSION }}
+        uses: docker/build-push-action@v2
+        with:
+          target: cmake-clang-conan
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |  
+            ghcr.io/fettpet/clang-conan-cmake-dockercontainer:cmake${{ env.CMAKE_VERSION }}-clang${{ matrix.clang_major }}-conan${{env.CONAN_VERSION}} 
+            ghcr.io/fettpet/clang-conan-cmake-dockercontainer:latest
+          build-args: |
+            DISTRO=${{ matrix.distro }}
+            CLANG_MAJOR=${{ matrix.clang_major }}
+            CONAN_VERSION=${{ env.CONAN_VERSION }}
