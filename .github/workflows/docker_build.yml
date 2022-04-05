@@ -5,7 +5,7 @@ on: push
 env:
   CMAKE_VERSION: "3.21.4"
   CMAKE_URL: "https://github.com/Kitware/CMake/releases/download/v3.21.4/cmake-3.21.4-linux-x86_64.tar.gz"
-  CONAN_VERSION: "1.43.0"
+  CONAN_VERSION: "1.47.0"
 
 jobs:
   cmake-clang:
@@ -46,7 +46,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: |  
             ghcr.io/fettpet/clang-conan-cmake-dockercontainer:cmake${{ env.CMAKE_VERSION }}-clang${{ matrix.clang_major }}-conan${{env.CONAN_VERSION}} 
-            ghcr.io/fettpet/clang-conan-cmake-dockercontainer:latest
+            ghcr.io/fettpet/clang-conan-cmake-dockercontainer:latest-clang${{ matrix.clang_major }}
           build-args: |
             DISTRO=${{ matrix.distro }}
             CLANG_MAJOR=${{ matrix.clang_major }}

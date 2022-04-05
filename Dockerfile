@@ -2,7 +2,7 @@ ARG DISTRO=focal
 ARG CLANG_MAJOR=12
 ARG CMAKE_VERSION=3.21.4
 ARG CMAKE_URL=https://github.com/Kitware/CMake/releases/download/v3.21.4/cmake-3.21.4-linux-x86_64.tar.gz
-ARG CONAN_VERSION=1.43.0
+ARG CONAN_VERSION=1.47.0
 
 FROM ubuntu:${DISTRO} AS cmake-clang
 ARG DISTRO
