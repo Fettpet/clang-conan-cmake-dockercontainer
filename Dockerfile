@@ -2,7 +2,7 @@ ARG DISTRO=focal
 ARG CLANG_MAJOR=12
 ARG CMAKE_VERSION=3.21.4
 ARG CMAKE_URL=https://github.com/Kitware/CMake/releases/download/v3.21.4/cmake-3.21.4-linux-x86_64.tar.gz
-ARG CONAN_VERSION=1.42.1
+ARG CONAN_VERSION=1.43.0
 
 FROM ubuntu:${DISTRO} AS cmake-clang
 ARG DISTRO
@@ -54,7 +54,6 @@ RUN apt-get update --quiet \
 RUN wget -qO - ${CMAKE_URL} | tar --strip-components=1 -xz -C /usr/local
 
 
-# final qbs-clang-conan 
 FROM cmake-clang AS cmake-clang-conan
 ARG DISTRO
 ARG CLANG_MAJOR
@@ -67,10 +66,6 @@ ENV \
     CONAN_USER_HOME=/conan
 RUN \
   apt-get update --quiet \
-  && if [ "${RUNTIME_APT}" != "" ] ; then export "RUNTIME_APT2=${RUNTIME_APT}" ; \
-    elif [ "${DISTRO}" = "xenial" ] ; then export "RUNTIME_APT2=${RUNTIME_XENIAL}" ; \
-    else export "RUNTIME_APT2=${RUNTIME_FOCAL}" ; \
-    fi \
   && apt-get install --yes --quiet --no-install-recommends \
     git \
     make \
@@ -78,7 +73,6 @@ RUN \
     python3 \
     python3-pip \
     libstdc++-10-dev \
-    ${RUNTIME_APT2} \
   && apt-get --yes autoremove \
   && apt-get clean autoclean \
   && pip3 install conan==${CONAN_VERSION} \

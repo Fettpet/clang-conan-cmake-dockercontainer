@@ -5,7 +5,7 @@ on: push
 env:
   CMAKE_VERSION: "3.21.4"
   CMAKE_URL: "https://github.com/Kitware/CMake/releases/download/v3.21.4/cmake-3.21.4-linux-x86_64.tar.gz"
-  CONAN_VERSION: "1.42.1"
+  CONAN_VERSION: "1.43.0"
 
 jobs:
   cmake-clang:
